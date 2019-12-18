@@ -3,7 +3,7 @@
 
 <% request.setCharacterEncoding("UTF-8"); %>
 <%
-	String answer = request.getParameter("answer");
+	String answer = (String) request.getAttribute("answer");
 %>
 <html>
   <head>

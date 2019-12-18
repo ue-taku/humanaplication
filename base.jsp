@@ -21,41 +21,39 @@
 				String reply = request.getParameter("input");
 				if(reply != null){
 
-					boolean start = reply.startsWith("好きって");
-					boolean end = reply.endsWith("言って");
+					String likeOrDislike = (String)session.getAttribute("input");
+					if(likeOrDislike == null){
+						likeOrDislike = "";
+					}
 
-					if(start == true && end == true){
+					if(reply.matches(".*って.*回言って！")){
 
-						String takeOut = reply.substring(0,2);
+						int x = reply.indexOf("って",0);
+						int y = reply.indexOf("回",0);
 
-                		if(reply.length()<10){
+						String takeOut = reply.substring(0,x);
+						String times = reply.substring(x+2,y);
 
-                   			String times = reply.substring(4,5);
-                    		int number = Integer.parseInt(times);
+                  		int number = Integer.parseInt(times);
 
-                				for(int i = 0; i<number; i++){
+                			for(int i = 1; i < number; i++){
                 				out.print(takeOut);
+                				if(number >= 10 && i == number-2){
+                					break;
                 				}
+                			}
 
          					out.print("疲れた...");
-
-         				} else {
-
-                   			String times = reply.substring(4,6);
-                    		int number = Integer.parseInt(times);
-
-                				for(int i = 0; i<number-2; i++){
-                				out.print(takeOut);
-                				}
-
-       		    			out.print("疲れた...");
-       		    		}
 
                 	} else {
 
 						switch(reply){
 
 						case "大好き":
+							if(likeOrDislike.equals("好き！")){
+								out.print("私も大好き");
+								break;
+							}
 
 						case "好き！":
 							out.print("ありがとう");
@@ -65,10 +63,25 @@
 							out.print("ひどい。。。");
 							break;
 
+						case "どうしても嫌い":
+							if(likeOrDislike.matches("きらい！")){
+								out.print("分かった。。。");
+								break;
+							} else {
+								out.print(reply);
+								break;
+							}
+
+						case "きらい！":
+							out.print("どうして。。。");
+							break;
+
 						default:
 							out.print(reply);
 				   		}
                 	}
+					likeOrDislike = reply;
+					session.setAttribute("input", likeOrDislike);
 				}
 				%>
 			</div>
